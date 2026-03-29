@@ -6,19 +6,19 @@ const AMAZON_ID = process.env.AMAZON_TRACKING_ID || '';
 const RAKUTEN_ID = process.env.RAKUTEN_AFFILIATE_ID || '';
 
 const KEYWORDS = [
-  {kw:'ヘアカラー 市販 トレンド 2025',genre:'ヘアカラー'},
-  {kw:'セルフブリーチ 失敗しない方法',genre:'ヘアカラー'},
-  {kw:'白髪ぼかし ハイライト やり方',genre:'ヘアカラー'},
-  {kw:'ヘアケア 寝る前 ルーティン',genre:'ヘアケア'},
-  {kw:'頭皮マッサージ 効果 やり方',genre:'ヘアケア'},
-  {kw:'洗顔 正しい やり方 順番',genre:'スキンケア'},
-  {kw:'化粧水 正しい つけ方 コツ',genre:'スキンケア'},
-  {kw:'日焼け止め 塗り直し 方法',genre:'スキンケア'},
-  {kw:'ニキビ跡 消す 方法 市販',genre:'スキンケア'},
-  {kw:'毛穴 黒ずみ 原因 対策',genre:'スキンケア'},
+  {kw:"30\u4ee3 \u30e1\u30f3\u30ba\u30d5\u30a1\u30c3\u30b7\u30e7\u30f3 \u304a\u3059\u3059\u3081",genre:"mens"},
+  {kw:"\u30d7\u30c1\u30d7\u30e9 \u30b3\u30fc\u30c7 \u304a\u3059\u3059\u3081",genre:"petite"},
+  {kw:"\u6625 \u30ec\u30c7\u30a3\u30fc\u30b9 \u30b3\u30fc\u30c7 2025",genre:"season"},
+  {kw:"\u30e6\u30cb\u30af\u30ed \u30b3\u30fc\u30c7 \u304a\u3059\u3059\u3081",genre:"petite"},
+  {kw:"\u767d\u30b7\u30e3\u30c4 \u30b3\u30fc\u30c7 \u7740\u3053\u306a\u3057",genre:"coordinate"},
+  {kw:"\u30c7\u30cb\u30e0 \u30b3\u30fc\u30c7 \u30e1\u30f3\u30ba",genre:"mens"},
+  {kw:"\u30ef\u30f3\u30d4\u30fc\u30b9 \u30b3\u30fc\u30c7 \u79cb\u51ac",genre:"season"},
+  {kw:"\u30b9\u30cb\u30fc\u30ab\u30fc \u304a\u3059\u3059\u3081 \u30ec\u30c7\u30a3\u30fc\u30b9",genre:"coordinate"},
+  {kw:"\u30a2\u30a6\u30bf\u30fc \u304a\u3059\u3059\u3081 \u79cb",genre:"season"},
+  {kw:"\u30ab\u30b8\u30e5\u30a2\u30eb \u304d\u308c\u3044\u3081 \u30b3\u30fc\u30c7",genre:"coordinate"}
 ];
 
-const SYS = `あなたは美容・ヘアケアの専門ライターです。読者目線で分かりやすく、SEOに強い記事を書きます。見出しはH2/H3を使ってください。文字数2000字以上。Markdown形式で出力。記事内でおすすめ商品を紹介する箇所には[AMAZON:商品名]と[RAKUTEN:商品名]を合計5箇所挿入してください。`;
+const SYS = `あなたはファッション専門ライターです。読者目線で分かりやすく、SEOに強い記事を書きます。見出しはH2/H3を使ってください。文字数2000字以上。Markdown形式で出力。記事内でおすすめ商品を紹介する箇所には[AMAZON:商品名]と[RAKUTEN:商品名]を合計5箇所挿入してください。`;
 
 function insertLinks(text) {
   text = text.replace(/\[AMAZON:([^\]]+)\]/g, (_, p) => {
@@ -31,7 +31,7 @@ function insertLinks(text) {
 }
 
 function toSlug(kw) {
-  return kw.replace(/\s+/g, '-').replace(/[^\w\-ぁ-ん一-龯]/g, '').toLowerCase() + '-' + Date.now();
+  return kw.replace(/[\s\u3000]+/g, '-').replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF-]/g, '') + '-' + Date.now();
 }
 
 async function generateArticle(kw, genre) {
@@ -57,7 +57,6 @@ async function main() {
   const contentDir = path.join(process.cwd(), 'content/blog');
   if (!fs.existsSync(contentDir)) fs.mkdirSync(contentDir, { recursive: true });
 
-  // 1回の実行で5本生成
   const targets = KEYWORDS.sort(() => Math.random() - 0.5).slice(0, 5);
 
   for (const { kw, genre } of targets) {
